@@ -1,9 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useBox } from '@react-three/cannon'
 
 function Building({ position, size }/*: { position: [number, number, number]; size: [number, number, number] }*/) {
-  const [ref] = useBox(() => ({ mass: 1, position, args: size }))
-
+  const [ref, api] = useBox(() => ({
+    mass: 1, position, args: size, userData: {
+      attachable: true,
+      attachOffset: size, // offset from player center when attached
+    }
+  }))
+  // Example of creating an attachable object in your Game.jsx or similar component
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.api = api
+    }
+  }, [api])
   return (
     <mesh ref={ref} castShadow receiveShadow>
       <boxGeometry args={size} />
